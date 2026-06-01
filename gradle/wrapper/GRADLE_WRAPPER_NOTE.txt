@@ -1,0 +1,1 @@
+Run 'gradle wrapper --gradle-version 8.7' in the project root to generate the wrapper jar.
