@@ -13,7 +13,7 @@ import okhttp3.OkHttpClient; import java.util.concurrent.TimeUnit; import javax.
 }
 
 
-// ── Billing ──────────────────────────────────────────────────────────────────
+// ââ Billing ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 import android.content.Context
 import com.scamshield.le.billing.BillingManager
 import com.scamshield.le.billing.BillingRepository
@@ -23,10 +23,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.scamshield.le.sync.FirebaseAuthManager
-import com.scamshield.le.sync.FirestoreSyncManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.scamshield.le.monitoring.AnalyticsTracker
+import com.scamshield.le.monitoring.CrashReporter
+import com.scamshield.le.monitoring.PerformanceTracker
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -47,22 +47,21 @@ object BillingModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+    fun provideFirebaseAnalytics(@ApplicationContext context: Context): FirebaseAnalytics {
+        return FirebaseAnalytics.getInstance(context)
+    }
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+    fun provideAnalyticsTracker(analytics: FirebaseAnalytics): AnalyticsTracker {
+        return AnalyticsTracker(analytics)
+    }
 
     @Provides
     @Singleton
-    fun provideFirebaseAuthManager(auth: FirebaseAuth): FirebaseAuthManager =
-        FirebaseAuthManager(auth)
+    fun provideCrashReporter(): CrashReporter = CrashReporter()
 
     @Provides
     @Singleton
-    fun provideFirestoreSyncManager(
-        firestore: FirebaseFirestore,
-        authManager: FirebaseAuthManager,
-        mapper: com.scamshield.le.sync.FirestoreIncidentMapper
-    ): FirestoreSyncManager = FirestoreSyncManager(firestore, authManager, mapper)
+    fun providePerformanceTracker(): PerformanceTracker = PerformanceTracker()
 }
