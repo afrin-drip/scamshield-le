@@ -1,4 +1,4 @@
-# 🚨 ScamShield LE
+# ð¨ ScamShield LE
 
 **Real-time protection against law enforcement impersonation scams**
 
@@ -9,77 +9,89 @@
 
 ---
 
+## Quick Start
+
+1. Clone repo + run `gradle wrapper --gradle-version 8.7`
+2. Add `CLAUDE_API_KEY=sk-ant-...` to `local.properties`
+3. Place `google-services.json` from Firebase in `app/`
+4. Open in Android Studio → sync → run on device (API 26+)
+5. Test with Settings → Simulation Mode → FBI Warrant script
+
+See [FIRST_BUILD_GUIDE.md](FIRST_BUILD_GUIDE.md) for full details.
+
+---
+
 ## Overview
 
 ScamShield LE is a fully-featured Android app that protects users from one of the fastest-growing fraud vectors: **law enforcement impersonation scams**. Scammers pose as police, FBI agents, U.S. Marshals, or court officials and pressure victims into sending money via gift cards, crypto, or wire transfer.
 
 The app monitors calls in real time using two layered AI systems, fires an immediate full-screen alert when scam patterns are detected, connects users to verified agency numbers, and helps report incidents to the FTC and FBI.
 
-> **Core Rule:** Real law enforcement does NOT demand immediate payment over the phone to avoid arrest. If that happens — hang up.
+> **Core Rule:** Real law enforcement does NOT demand immediate payment over the phone to avoid arrest. If that happens â hang up.
 
 ---
 
 ## Features
 
-### 🎤 Two-Layer Real-Time Detection
-**Layer 1 — Android SpeechRecognizer (Primary)**
+### ð¤ Two-Layer Real-Time Detection
+**Layer 1 â Android SpeechRecognizer (Primary)**
 Fast, free, on-device transcription. Feeds text into the rules engine instantly with zero latency.
 
-**Layer 2 — Claude API Enhancement (Backup)**
+**Layer 2 â Claude API Enhancement (Backup)**
 Kicks in when STT confidence drops below 60%, on STT errors, or every 100 words for a deep semantic scan. Catches manipulation tactics, indirect threats, and edge cases that keyword matching misses.
 
 The monitoring screen shows which layer is active in real time ("android_stt (82% conf)" or "claude_enhanced (91% conf)").
 
-### 🧠 Rules Engine + Risk Scoring
+### ð§  Rules Engine + Risk Scoring
 
 | Signal | Score |
 |---|---|
-| Law enforcement claim (police, FBI, marshal, DEA…) | +25 |
+| Law enforcement claim (police, FBI, marshal, DEAâ¦) | +25 |
 | Warrant / arrest language | +20 |
 | Request for money | +40 |
-| Suspicious payment method (gift card, crypto, Zelle, wire…) | +60 |
+| Suspicious payment method (gift card, crypto, Zelle, wireâ¦) | +60 |
 | Urgency / pressure ("don't hang up", "stay on the line") | +20 |
 
-**Risk Levels:** 40+ ⚠️ Suspicious · 70+ 🚨 Likely Scam · 90+ 🚨🚨 Critical Alert
+**Risk Levels:** 40+ â ï¸ Suspicious Â· 70+ ð¨ Likely Scam Â· 90+ ð¨ð¨ Critical Alert
 
-### 📱 App Screens
-- **Home** — Start monitoring, view history, access settings
-- **Monitoring** — Live risk meter, real-time transcript, signal chips, analysis source indicator
-- **Alert** — Full-screen red alert with hang-up instruction, verified agency callback, FTC/FBI reporting
-- **History** — Incident log with risk scores, signals, timestamps, one-tap reporting
-- **Agency Directory** — 10 verified federal agencies with direct call and website buttons, filterable by category
-- **Report Screen** — FTC/IC3 report workflow with optional details, share report summary
-- **Settings** — Passive detection toggle, alert threshold slider, sound/vibration, family mode
-- **Family Protection** — Add/manage family members with per-member monitoring and notification toggles
-- **Analytics Dashboard** — Canvas bar chart, risk distribution, signal frequency rankings
-- **Simulation Mode** — 5 realistic scam scripts (FBI warrant, IRS arrest, Sheriff deputy, U.S. Marshal, court summons) with live risk scoring
-- **Onboarding** — 4-step animated first-run flow with permission request and key rule explanation
+### ð± App Screens
+- **Home** â Start monitoring, view history, access settings
+- **Monitoring** â Live risk meter, real-time transcript, signal chips, analysis source indicator
+- **Alert** â Full-screen red alert with hang-up instruction, verified agency callback, FTC/FBI reporting
+- **History** â Incident log with risk scores, signals, timestamps, one-tap reporting
+- **Agency Directory** â 10 verified federal agencies with direct call and website buttons, filterable by category
+- **Report Screen** â FTC/IC3 report workflow with optional details, share report summary
+- **Settings** â Passive detection toggle, alert threshold slider, sound/vibration, family mode
+- **Family Protection** â Add/manage family members with per-member monitoring and notification toggles
+- **Analytics Dashboard** â Canvas bar chart, risk distribution, signal frequency rankings
+- **Simulation Mode** â 5 realistic scam scripts (FBI warrant, IRS arrest, Sheriff deputy, U.S. Marshal, court summons) with live risk scoring
+- **Onboarding** â 4-step animated first-run flow with permission request and key rule explanation
 
-### 🛡️ Passive Detection
+### ð¡ï¸ Passive Detection
 Enable in Settings to automatically monitor all incoming calls without manually tapping "Start Monitoring." Uses Android's `TelephonyManager` and runs as a foreground service.
 
-> ⚠️ Check your state's call recording laws before enabling passive detection.
+> â ï¸ Check your state's call recording laws before enabling passive detection.
 
-### 👨‍👩‍👧 Family Protection Mode
+### ð¨âð©âð§ Family Protection Mode
 Add family members (name, phone, relationship). When a scam is detected on their monitored line, a push notification fires to the guardian with the risk score and transcript excerpt. Powered by Firebase Cloud Messaging.
 
-### 📞 CallScreeningService (API 29+)
-ScamShield can be set as your default call screening app via Android's `RoleManager`. This enables true call interception — no speakerphone required, cleaner audio, runs before you even answer.
+### ð CallScreeningService (API 29+)
+ScamShield can be set as your default call screening app via Android's `RoleManager`. This enables true call interception â no speakerphone required, cleaner audio, runs before you even answer.
 
-### 📊 Scam Analytics
+### ð Scam Analytics
 Track your personal scam history: total incidents, most common signals, calls over time, risk score distribution.
 
-### 🎭 Demo / Simulation Mode
-Built-in scam call simulator with 5 realistic scripts. Perfect for demos, investor pitches, or training family members — watch the risk meter climb in real time without needing a real scam call.
+### ð­ Demo / Simulation Mode
+Built-in scam call simulator with 5 realistic scripts. Perfect for demos, investor pitches, or training family members â watch the risk meter climb in real time without needing a real scam call.
 
-### 🏛️ Verified Agency Directory
+### ðï¸ Verified Agency Directory
 10 verified federal agency contacts with one-tap calling:
 - FTC (1-877-382-4357)
 - FBI / IC3 (1-800-CALL-FBI)
 - U.S. Marshals (1-877-869-3869)
 - DEA, IRS CI, SSA OIG, CFPB, and more
 
-### 📋 FTC / IC3 Reporting
+### ð FTC / IC3 Reporting
 From any incident in history, tap "Report" to open a form with optional details (caller name, phone number, amount requested), then submit directly to FTC's ReportFraud.gov or FBI's IC3.gov with one tap. Or share a formatted incident summary via the Android share sheet.
 
 ---
@@ -93,8 +105,8 @@ From any incident in history, tap "Report" to open a form with optional details 
 | DI | Hilt |
 | Database | Room (incidents + family members) |
 | Preferences | SharedPreferences (settings) |
-| AI — Primary | Android SpeechRecognizer |
-| AI — Enhancement | Claude API (`claude-3-5-haiku-20241022`) |
+| AI â Primary | Android SpeechRecognizer |
+| AI â Enhancement | Claude API (`claude-3-5-haiku-20241022`) |
 | Audio | Android `AudioRecord` (16kHz, mono, PCM) |
 | Notifications | Firebase Cloud Messaging (FCM) |
 | Network | OkHttp |
@@ -108,8 +120,8 @@ From any incident in history, tap "Report" to open a form with optional details 
 - Android Studio Hedgehog (2023.1.1+)
 - JDK 17
 - Android SDK API 26+
-- Claude API key — [console.anthropic.com](https://console.anthropic.com)
-- Firebase project (for family notifications) — [console.firebase.google.com](https://console.firebase.google.com)
+- Claude API key â [console.anthropic.com](https://console.anthropic.com)
+- Firebase project (for family notifications) â [console.firebase.google.com](https://console.firebase.google.com)
 
 ### Quick Start
 
@@ -124,7 +136,7 @@ cd scamshield-le
 gradle wrapper --gradle-version 8.7
 ```
 
-**3. Configure API keys** — create/edit `local.properties`:
+**3. Configure API keys** â create/edit `local.properties`:
 ```
 sdk.dir=/path/to/your/android/sdk
 CLAUDE_API_KEY=sk-ant-your-key-here
@@ -135,7 +147,7 @@ FIREBASE_SERVER_KEY=your-firebase-server-key
 Download `google-services.json` from your Firebase project and place it in the `app/` folder.
 See `FIREBASE_SETUP.md` for full instructions.
 
-**5. Open in Android Studio → sync → run**
+**5. Open in Android Studio â sync â run**
 Run on a physical device (API 26+) or emulator. Grant microphone permission when prompted.
 
 ---
@@ -156,10 +168,10 @@ Run on a physical device (API 26+) or emulator. Grant microphone permission when
 
 ## Privacy
 
-- Monitoring is **user-initiated** by default — no background recording without explicit opt-in
+- Monitoring is **user-initiated** by default â no background recording without explicit opt-in
 - Audio is captured only during active monitoring sessions
 - Transcripts are sent transiently to Claude API for analysis and **not stored by Anthropic**
-- No audio or transcripts are permanently stored — only risk scores and signal summaries
+- No audio or transcripts are permanently stored â only risk scores and signal summaries
 - Family member data is stored **locally only** on the device
 - Designed for one-party consent compliance (e.g., Texas)
 
@@ -171,27 +183,36 @@ See `PRIVACY_POLICY.md` for full policy.
 
 | Phase | Features | Status |
 |---|---|---|
-| 1 | Core UI, rules engine, audio capture, Claude API, Room DB, alert system | ✅ Complete |
-| 2 | Android SpeechRecognizer (Layer 1) + Claude semantic enhancement (Layer 2) | ✅ Complete |
-| 3 | Verified agency directory, FTC/IC3 reporting workflow | ✅ Complete |
-| 4 | Family protection mode, passive background detection, settings screen | ✅ Complete |
-| 5A | Onboarding flow, app icon, Play Store prep | ✅ Complete |
-| 5B | Smart family notifications via FCM | ✅ Complete |
-| 5C | Android CallScreeningService (API 29+) | ✅ Complete |
-| 5D | Scam analytics dashboard | ✅ Complete |
-| 5E | Demo/simulation mode with 5 scam scripts | ✅ Complete |
-| 6 | iOS port (SwiftUI), Kotlin Multiplatform shared logic | 🔜 Planned |
-| 7 | Web dashboard, law enforcement data sharing API | 🔜 Planned |
-| 8 | Google Play Billing, subscription tiers | 🔜 Planned |
+| 1 | Core UI, rules engine, audio capture, Claude API, Room DB, alert system | â Complete |
+| 2 | Android SpeechRecognizer (Layer 1) + Claude semantic enhancement (Layer 2) | â Complete |
+| 3 | Verified agency directory, FTC/IC3 reporting workflow | â Complete |
+| 4 | Family protection mode, passive background detection, settings screen | â Complete |
+| 5A | Onboarding flow, app icon, Play Store prep | â Complete |
+| 5B | Smart family notifications via FCM | â Complete |
+| 5C | Android CallScreeningService (API 29+) | â Complete |
+| 5D | Scam analytics dashboard | â Complete |
+| 5E | Demo/simulation mode with 5 scam scripts | â Complete |
+| 6A | Google Play Billing (subscription tiers) | ✅ Complete |
+| 6B | KMM Shared Module (RiskEngine, AgencyDirectory, ScamScripts shared) | ✅ Complete |
+| 6C | Android Unit Tests (70+ test cases) | ✅ Complete |
+| 6D | iOS Unit Tests (XCTest suite) | ✅ Complete |
+| 6E | iOS StoreKit 2 (in-app subscriptions) | ✅ Complete |
+| 6F | Firestore sync (real-time web dashboard) | ✅ Complete |
+| 6G | Firebase Crashlytics + Performance + Analytics | ✅ Complete |
+| 6H | Deep Linking + FCM Notifications | ✅ Complete |
+| 6I | Accessibility (TalkBack, Spanish/French localization) | ✅ Complete |
+| 6J | Android Glance Widget | ✅ Complete |
+| 6K | Web Dashboard (Next.js 14) | ✅ Complete |
+| 6L | iOS CallKit integration | ✅ Complete |
 
 ---
 
 ## Monetization
 
-- **Free** — Manual monitoring, basic alert, agency directory
-- **Pro ($2.99/mo)** — Passive detection, analytics dashboard, simulation mode
-- **Family ($4.99/mo)** — 5 protected numbers, guardian notifications, full history
-- **Enterprise** — White-label for county sheriff offices, banks, senior living facilities
+- **Free** â Manual monitoring, basic alert, agency directory
+- **Pro ($2.99/mo)** â Passive detection, analytics dashboard, simulation mode
+- **Family ($4.99/mo)** â 5 protected numbers, guardian notifications, full history
+- **Enterprise** â White-label for county sheriff offices, banks, senior living facilities
 
 See `MONETIZATION.md` for full strategy and `BUSINESS_PLAN.md` for investor materials.
 
@@ -213,6 +234,21 @@ See `MONETIZATION.md` for full strategy and `BUSINESS_PLAN.md` for investor mate
 | `BUSINESS_PLAN.md` | Investor-ready business plan |
 | `MONETIZATION.md` | Detailed monetization strategy |
 | `PITCH_DECK_OUTLINE.md` | 12-slide pitch deck outline |
+| `FIRST_BUILD_GUIDE.md` | Complete device setup and first build walkthrough |
+| `DEVICE_TESTING_CHECKLIST.md` | Quick verification checklist |
+| `CRASHLYTICS_SETUP.md` | Firebase Crashlytics setup for both platforms |
+
+---
+
+## Project Structure
+
+```
+app/                  Android app module
+shared/               Kotlin Multiplatform shared module (RiskEngine, AgencyDirectory, ScamScripts)
+web/                  Next.js 14 family dashboard
+ios/ScamShieldLE/     iOS SwiftUI app
+ios/ScamShieldLETests/ XCTest suite
+```
 
 ---
 
@@ -238,6 +274,6 @@ TBD
 ## Final Note
 
 > *"Law enforcement does not demand immediate payment over the phone to avoid arrest. Do not pay. Hang up and call the agency from an official number."*
-> — FTC, FBI, U.S. Marshals Service
+> â FTC, FBI, U.S. Marshals Service
 
-**ScamShield LE — stop the scam before it happens.**
+**ScamShield LE â stop the scam before it happens.**
