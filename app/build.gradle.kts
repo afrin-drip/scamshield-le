@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     id("com.google.firebase.crashlytics")
+    id("com.google.gms.google-services")
 }
 android {
     namespace = "com.scamshield.le"
