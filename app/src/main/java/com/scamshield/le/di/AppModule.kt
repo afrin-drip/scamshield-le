@@ -23,6 +23,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.scamshield.le.sync.FirebaseAuthManager
+import com.scamshield.le.sync.FirestoreSyncManager
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -40,4 +44,25 @@ object BillingModule {
         @ApplicationContext context: Context,
         billingManager: BillingManager
     ): BillingRepository = BillingRepository(context, billingManager)
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuthManager(auth: FirebaseAuth): FirebaseAuthManager =
+        FirebaseAuthManager(auth)
+
+    @Provides
+    @Singleton
+    fun provideFirestoreSyncManager(
+        firestore: FirebaseFirestore,
+        authManager: FirebaseAuthManager,
+        mapper: com.scamshield.le.sync.FirestoreIncidentMapper
+    ): FirestoreSyncManager = FirestoreSyncManager(firestore, authManager, mapper)
 }
