@@ -13,6 +13,7 @@ import com.scamshield.le.ui.home.HomeScreen
 import com.scamshield.le.ui.monitoring.MonitoringScreen
 import com.scamshield.le.ui.report.ReportScreen
 import com.scamshield.le.ui.settings.SettingsScreen
+import com.scamshield.le.ui.analytics.AnalyticsScreen
 object Routes { const val HOME = "home"; const val MONITORING = "monitoring"; const val ALERT = "alert"; const val HISTORY = "history"; const val AGENCIES = "agencies"; const val SETTINGS = "settings"; const val FAMILY = "family"; const val REPORT = "report/{incidentId}"; fun report(id: Long) = "report/$id" }
 @Composable fun AppNavigation() {
     val nav = rememberNavController()
@@ -27,3 +28,9 @@ object Routes { const val HOME = "home"; const val MONITORING = "monitoring"; co
         composable(Routes.REPORT, arguments = listOf(navArgument("incidentId") { type = NavType.LongType })) { val id = it.arguments?.getLong("incidentId") ?: return@composable; ReportScreen(incidentId = id, onBack = { nav.popBackStack() }) }
     }
 }
+        composable("analytics") {
+            AnalyticsScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
