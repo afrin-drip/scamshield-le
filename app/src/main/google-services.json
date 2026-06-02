@@ -1,0 +1,16 @@
+{
+  "project_info": {
+    "project_number": "TODO_REPLACE_WITH_PROJECT_NUMBER",
+    "project_id": "TODO_REPLACE_WITH_PROJECT_ID",
+    "storage_bucket": "TODO_REPLACE.appspot.com"
+  },
+  "client": [{
+    "client_info": {
+      "mobilesdk_app_id": "1:000000000000:android:0000000000000000",
+      "android_client_info": { "package_name": "com.scamshield.le" }
+    },
+    "api_key": [{"current_key": "TODO_REPLACE_WITH_API_KEY"}],
+    "services": { "appinvite_service": { "other_platform_oauth_client": [] } }
+  }],
+  "configuration_version": "1"
+}
