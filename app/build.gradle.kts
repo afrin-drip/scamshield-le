@@ -12,7 +12,22 @@ android {
         minSdk = 26; targetSdk = 35; versionCode = 1; versionName = "1.0"
         buildConfigField("String", "CLAUDE_API_KEY", "\"${project.findProperty(\"CLAUDE_API_KEY\") ?: \"\"}\"")
     }
-    buildTypes { release { isMinifyEnabled = true } }
+    signingConfigs {
+        create("release") {
+            // TODO: Configure release signing
+            // storeFile = file(System.getenv("KEYSTORE_PATH") ?: "release.keystore")
+            // storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
+            // keyAlias = System.getenv("KEY_ALIAS") ?: ""
+            // keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+        }
+    }
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            // signingConfig = signingConfigs.getByName("release")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true; buildConfig = true }
@@ -32,4 +47,9 @@ dependencies {
     implementation(libs.room.runtime); implementation(libs.room.ktx); ksp(libs.room.compiler)
     implementation(libs.okhttp); implementation(libs.gson)
     implementation(libs.kotlinx.coroutines.android)
+    // DataStore for onboarding completion state
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    // Compose Foundation for HorizontalPager (built-in since compose-foundation 1.4+)
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material.icons:material-icons-extended")
 }
