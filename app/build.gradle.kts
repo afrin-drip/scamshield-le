@@ -52,4 +52,5 @@ dependencies {
     // Compose Foundation for HorizontalPager (built-in since compose-foundation 1.4+)
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material.icons:material-icons-extended")
+    implementation("androidx.glance:glance-appwidget:1.0.0")
 }
