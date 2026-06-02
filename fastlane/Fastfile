@@ -1,0 +1,44 @@
+default_platform(:android)
+
+platform :android do
+
+  desc "Build and upload to Play Store internal track"
+  lane :beta do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      properties: {
+        "android.injected.signing.store.file" => "keystore.jks",
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"],
+      }
+    )
+    upload_to_play_store(
+      track: "internal",
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      json_key_data: ENV["PLAY_STORE_JSON_KEY"],
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_changelogs: false,
+    )
+  end
+
+  desc "Promote internal build to production (10% rollout)"
+  lane :deploy do
+    upload_to_play_store(
+      track: "internal",
+      track_promote_to: "production",
+      rollout: "0.1",
+      json_key_data: ENV["PLAY_STORE_JSON_KEY"],
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+    )
+  end
+
+  desc "Capture screenshots (placeholder)"
+  lane :screenshots do
+    UI.message("Screenshot automation coming soon — see screenshots-guide.md for manual steps")
+  end
+
+end
