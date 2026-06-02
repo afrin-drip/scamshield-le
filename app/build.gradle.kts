@@ -55,6 +55,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material.icons:material-icons-extended")
     implementation("androidx.glance:glance-appwidget:1.0.0")
+    implementation(libs.billing.ktx)
     // Unit test dependencies
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.mockk:mockk:1.13.10")
