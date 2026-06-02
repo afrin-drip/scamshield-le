@@ -15,5 +15,15 @@
         </activity>
         <service android:name=".audio.AudioCaptureService"
             android:foregroundServiceType="microphone" android:exported="false"/>
+    
+        <!-- Track C: Call Screening Service -->
+        <service
+            android:name=".service.CallScreeningServiceImpl"
+            android:exported="true"
+            android:permission="android.permission.BIND_SCREENING_APP_SERVICE">
+            <intent-filter>
+                <action android:name="android.telecom.CallScreeningService"/>
+            </intent-filter>
+        </service>
     </application>
 </manifest>
