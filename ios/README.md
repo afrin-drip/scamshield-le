@@ -1,79 +1,96 @@
 # ScamShield LE — iOS
 
-SwiftUI companion to the Android (Kotlin/Jetpack Compose) app. Detects scam-call patterns in real time using on-device speech recognition.
+## CallKit Integration
 
-## Requirements
+### Overview
 
-- Xcode 15+
-- iOS 17+ (SwiftData requires iOS 17)
-- Physical device for microphone / speech recognition (simulator has limited support)
+ScamShield LE uses Apple's **CallKit** framework to provide caller-ID labeling and number blocking on iOS. This is fundamentally different from the Android implementation — see [iOS vs Android](#ios-vs-android-audio-interception) below.
 
-## Project Structure
+---
 
-```
-ios/ScamShieldLE/
-├── ScamShieldLEApp.swift
-├── ContentView.swift
-├── Info.plist
-├── Models/
-│   ├── ScamSignal.swift        # Signal enum (score, label, icon)
-│   ├── RiskAssessment.swift    # Assessment struct + RiskLevel enum
-│   ├── Incident.swift          # SwiftData @Model
-│   └── Agency.swift            # Agency struct + AgencyDirectory singleton
-├── Detection/
-│   ├── RiskEngine.swift               # Keyword scoring (port of RiskEngine.kt)
-│   ├── SpeechRecognitionManager.swift # SFSpeechRecognizer w/ auto-restart
-│   └── CallAnalysisCoordinator.swift  # Orchestrator ObservableObject
-├── Views/
-│   ├── HomeView.swift
-│   ├── MonitoringView.swift    # Live gauge, transcript, signal chips
-│   ├── AlertView.swift         # Full-screen alert on high/critical risk
-│   ├── AgencyDirectoryView.swift
-│   ├── HistoryView.swift
-│   └── SettingsView.swift
-├── Data/
-│   ├── IncidentStore.swift     # ModelContainer singleton
-│   └── SettingsStore.swift     # @AppStorage wrappers
-├── Alert/
-│   └── AlertManager.swift      # Haptics, TTS, local notifications
-└── Simulation/
-    ├── ScamScripts.swift        # 5 test scenarios
-    ├── SimulationViewModel.swift
-    └── SimulationView.swift
+### Xcode Project Setup
+
+#### 1. Add the Call Directory Extension target
+
+1. File → New → Target → **Call Directory Extension**
+2. Product Name: `CallDirectoryExtension`
+3. Bundle ID: `com.verreauxgroup.scamshield-le.CallDirectoryExtension`
+4. Replace the generated `CallDirectoryHandler.swift` with `ios/CallDirectoryExtension/CallDirectoryHandler.swift` from this repo.
+
+#### 2. CallKit Entitlement
+
+The **host app** target requires the `com.apple.developer.callkit.enabled` entitlement in its `.entitlements` file:
+
+```xml
+<key>com.apple.developer.callkit.enabled</key>
+<true/>
 ```
 
-## Setup
+> This entitlement must be present in your provisioning profile. Add it in the **Signing & Capabilities** tab → **+Capability** → **CallKit**.
 
-1. Open `ios/ScamShieldLE.xcodeproj` in Xcode 15+
-2. Set your **Team** in Signing & Capabilities
-3. Change **Bundle Identifier** (e.g. `com.yourorg.scamshieldle`)
-4. Run on a physical iPhone (iOS 17+)
-5. Grant microphone and speech recognition permissions when prompted
+The extension target does **not** need this entitlement separately — it inherits authorization through the host app.
 
-## Architecture
+#### 3. App Group Setup
 
-| Layer | Technology |
+Both the host app and the extension must share an **App Group** so blocked numbers written by the app are readable by the extension.
+
+1. In Xcode, select the **ScamShieldLE** target → Signing & Capabilities → **+Capability** → **App Groups**.
+2. Add: `group.com.verreauxgroup.scamshield-le`
+3. Repeat for the **CallDirectoryExtension** target.
+4. Blocked numbers are stored as `[Int64]` under the key `"blockedNumbers"` in `UserDefaults(suiteName: "group.com.verreauxgroup.scamshield-le")`.
+
+After writing new numbers, call `CallKitManager.shared.reloadExtension()` to sync them with iOS.
+
+---
+
+### Architecture
+
+| File | Role |
 |---|---|
-| UI | SwiftUI + NavigationStack |
-| State | `@MainActor` ObservableObject + Combine |
-| Persistence | SwiftData (`@Model`, `ModelContainer`) |
-| Speech | `SFSpeechRecognizer` continuous w/ auto-restart |
-| Detection | Pure Swift keyword engine (port of `RiskEngine.kt`) |
-| Alerts | `UINotificationFeedbackGenerator` + `AVSpeechSynthesizer` + `UNUserNotificationCenter` |
+| `CallDirectoryExtension/CallDirectoryHandler.swift` | `CXCallDirectoryProvider` subclass. Reads blocked numbers from shared UserDefaults; flags suspicious area codes (202, 206, 212, 213, 310, 404, 415, 602, 702, 800, 888). |
+| `CallDirectoryExtension/Info.plist` | Extension bundle metadata; declares `com.apple.callkit.call-directory` extension point. |
+| `ScamShieldLE/CallKit/CallKitManager.swift` | `@MainActor` singleton wrapping `CXCallDirectoryManager`. Exposes `checkAuthorizationStatus()`, `reloadExtension()`, and `isExtensionEnabled`. |
+| `ScamShieldLE/CallKit/CallMonitor.swift` | `@Observable` class using `CXCallObserver`. Tracks `isOnCall` and `currentCallUUID`; posts `Notification.Name.scamShieldCallConnected` on connect. |
+| `ScamShieldLE/CallKit/CallKitSetupView.swift` | SwiftUI settings view; explains capabilities & limitations, shows status, deep-links to Settings. |
+| `ScamShieldLE/Views/SettingsView.swift` | Main settings screen; includes "Call Identification" section with status badge and navigate-to-configure button. |
 
-## Risk Scoring (mirrors Android exactly)
+---
 
-| Signal | Score |
-|---|---|
-| Gift Card Payment | 30 |
-| Impersonation | 25 |
-| Unusual Payment Method | 25 |
-| Arrest Threat | 25 |
-| Payment Demand | 20 |
-| Threat Language | 20 |
-| Secrecy Instruction | 20 |
-| Legal Threat | 20 |
-| Urgency/Pressure | 15 |
-| Personal Info Request | 15 |
+### iOS vs Android Audio Interception
 
-Scores cap at 100. Alert fires at High (≥60) or Critical (≥80).
+| Feature | Android (ScamShield LE) | iOS (ScamShield LE) |
+|---|---|---|
+| Live call audio analysis | ✅ Via Accessibility Service | ❌ Not permitted by Apple |
+| Caller ID labeling | ✅ | ✅ Via CallKit |
+| Number blocking | ✅ | ✅ Via CallKit |
+| Works without app open | Partial | ✅ CallKit extension runs in background |
+| Requires user permission | Accessibility permission | Phone → Call Blocking & Identification |
+
+**Why iOS cannot intercept audio:**
+Apple's security model sandboxes all apps strictly. There is no public API equivalent to Android's `MediaProjection` or Accessibility audio capture for standard cellular calls. VoIP-based calls (via `CXProvider`) can be processed, but regular PSTN calls are off-limits. ScamShield LE's iOS build therefore relies solely on database-driven caller ID to warn users before they answer.
+
+---
+
+### User Flow
+
+1. User installs ScamShieldLE.
+2. Opens **Settings → Call Identification → Configure**.
+3. `CallKitSetupView` explains capabilities and taps **Open Settings**.
+4. User navigates to **Settings → Phone → Call Blocking & Identification** and enables ScamShield.
+5. `CXCallDirectoryManager` authorization status becomes `.enabled`.
+6. `CallDirectoryHandler` is invoked by iOS whenever its database needs refreshing; it writes identification entries for suspicious area codes and any user-blocked numbers.
+7. Incoming calls from flagged numbers show the ScamShield label in the system call UI.
+
+---
+
+### Running Locally
+
+```bash
+# Open in Xcode
+open ios/ScamShieldLE.xcodeproj
+
+# Build & run on a physical device (CallKit requires real hardware)
+# Simulator does not support CXCallDirectoryManager reloads.
+```
+
+> **Note:** CallKit extensions cannot be tested on the iOS Simulator. Use a physical device with a valid provisioning profile that includes the App Group and CallKit entitlements.
