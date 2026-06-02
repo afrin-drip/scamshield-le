@@ -1,0 +1,206 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B001000001 /* ScamShieldLEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000001; };
+		B001000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000002; };
+		B001000003 /* ScamSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000003; };
+		B001000004 /* RiskAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000004; };
+		B001000005 /* Incident.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000005; };
+		B001000006 /* Agency.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000006; };
+		B001000007 /* RiskEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000007; };
+		B001000008 /* SpeechRecognitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000008; };
+		B001000009 /* CallAnalysisCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000009; };
+		B001000010 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000010; };
+		B001000011 /* MonitoringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000011; };
+		B001000012 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000012; };
+		B001000013 /* AgencyDirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000013; };
+		B001000014 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000014; };
+		B001000015 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000015; };
+		B001000016 /* IncidentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000016; };
+		B001000017 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000017; };
+		B001000018 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000018; };
+		B001000019 /* ScamScripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000019; };
+		B001000020 /* SimulationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000020; };
+		B001000021 /* SimulationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000021; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A001000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScamShieldLEApp.swift; sourceTree = "<group>"; };
+		A001000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A001000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScamSignal.swift; sourceTree = "<group>"; };
+		A001000004 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskAssessment.swift; sourceTree = "<group>"; };
+		A001000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Incident.swift; sourceTree = "<group>"; };
+		A001000006 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Agency.swift; sourceTree = "<group>"; };
+		A001000007 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskEngine.swift; sourceTree = "<group>"; };
+		A001000008 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognitionManager.swift; sourceTree = "<group>"; };
+		A001000009 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallAnalysisCoordinator.swift; sourceTree = "<group>"; };
+		A001000010 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A001000011 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoringView.swift; sourceTree = "<group>"; };
+		A001000012 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
+		A001000013 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgencyDirectoryView.swift; sourceTree = "<group>"; };
+		A001000014 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		A001000015 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A001000016 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncidentStore.swift; sourceTree = "<group>"; };
+		A001000017 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		A001000018 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
+		A001000019 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScamScripts.swift; sourceTree = "<group>"; };
+		A001000020 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationViewModel.swift; sourceTree = "<group>"; };
+		A001000021 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationView.swift; sourceTree = "<group>"; };
+		A001000022 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A001000099 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScamShieldLE.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C001000001 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D001000000 = {isa = PBXGroup; children = (D001000001, D001000099,); sourceTree = "<group>"; };
+		D001000001 = {isa = PBXGroup; children = (A001000001, A001000002, A001000022, D001000010, D001000020, D001000030, D001000040, D001000050, D001000060,); path = ScamShieldLE; sourceTree = "<group>"; };
+		D001000010 = {isa = PBXGroup; children = (A001000003, A001000004, A001000005, A001000006,); path = Models; sourceTree = "<group>"; };
+		D001000020 = {isa = PBXGroup; children = (A001000007, A001000008, A001000009,); path = Detection; sourceTree = "<group>"; };
+		D001000030 = {isa = PBXGroup; children = (A001000010, A001000011, A001000012, A001000013, A001000014, A001000015,); path = Views; sourceTree = "<group>"; };
+		D001000040 = {isa = PBXGroup; children = (A001000016, A001000017,); path = Data; sourceTree = "<group>"; };
+		D001000050 = {isa = PBXGroup; children = (A001000018,); path = Alert; sourceTree = "<group>"; };
+		D001000060 = {isa = PBXGroup; children = (A001000019, A001000020, A001000021,); path = Simulation; sourceTree = "<group>"; };
+		D001000099 = {isa = PBXGroup; children = (A001000099,); name = Products; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E001000001 = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F001000001;
+			buildPhases = (C001000001, C001000002, C001000003,);
+			buildRules = ();
+			dependencies = ();
+			name = ScamShieldLE;
+			productName = ScamShieldLE;
+			productReference = A001000099;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E001000000 = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = { E001000001 = { CreatedOnToolsVersion = 15.0; }; };
+			};
+			buildConfigurationList = F001000000;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base,);
+			mainGroup = D001000000;
+			productRefGroup = D001000099;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (E001000001,);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C001000003 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C001000002 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B001000001, B001000002, B001000003, B001000004, B001000005,
+				B001000006, B001000007, B001000008, B001000009, B001000010,
+				B001000011, B001000012, B001000013, B001000014, B001000015,
+				B001000016, B001000017, B001000018, B001000019, B001000020,
+				B001000021,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F001000010 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO; DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1", "$(inherited)",);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				ONLY_ACTIVE_ARCH = YES; SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F001000011 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos; SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F001000020 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES; GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ScamShieldLE/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks",);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.scamshield.le;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F001000021 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES; GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ScamShieldLE/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks",);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.scamshield.le;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F001000000 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (F001000010, F001000011,);
+			defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;
+		};
+		F001000001 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (F001000020, F001000021,);
+			defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = E001000000;
+}
