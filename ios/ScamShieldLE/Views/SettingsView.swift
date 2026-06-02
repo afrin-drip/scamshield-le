@@ -1,44 +1,101 @@
+//
+//  SettingsView.swift
+//  ScamShieldLE
+//
+//  Main settings screen. Includes a "Call Identification" section
+//  that shows CallKit extension status and links to CallKitSetupView.
+//
+
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var settings = SettingsStore.shared
+
+    @StateObject private var callKitManager = CallKitManager.shared
 
     var body: some View {
-        Form {
-            Section {
-                Toggle("Passive Detection", isOn: $settings.passiveDetectionEnabled)
-                Toggle("Family Mode", isOn: $settings.familyModeEnabled)
-                Toggle("Haptic Alerts", isOn: $settings.hapticAlertsEnabled)
-                Toggle("Voice Alerts", isOn: $settings.voiceAlertsEnabled)
-                Toggle("Local Notifications", isOn: $settings.localNotificationsEnabled)
-            } header: {
-                Text("Detection Settings")
-            } footer: {
-                Text("Passive Detection monitors ambient audio in the background. Family Mode lowers the alert threshold for extra sensitivity.")
-            }
+        NavigationStack {
+            List {
 
-            Section("Alert Threshold") {
-                VStack(alignment: .leading, spacing: 8) {
+                // MARK: - Call Identification
+                Section {
                     HStack {
-                        Text("Alert at score:")
+                        Label("Status", systemImage: "phone.badge.checkmark")
                         Spacer()
-                        Text("\(Int(settings.alertThreshold))").bold()
+                        callIdentificationStatusLabel
                     }
-                    Slider(value: $settings.alertThreshold, in: 20...80, step: 5)
+
+                    NavigationLink {
+                        CallKitSetupView()
+                    } label: {
+                        Label("Configure", systemImage: "gear")
+                    }
+                } header: {
+                    Text("Call Identification")
+                } footer: {
+                    Text("ScamShield flags suspected scam calls using iOS CallKit. Tap Configure to enable or learn more.")
+                }
+
+                // MARK: - General
+                Section("General") {
+                    NavigationLink {
+                        Text("Notifications settings go here")
+                            .navigationTitle("Notifications")
+                    } label: {
+                        Label("Notifications", systemImage: "bell")
+                    }
+
+                    NavigationLink {
+                        Text("Privacy settings go here")
+                            .navigationTitle("Privacy")
+                    } label: {
+                        Label("Privacy", systemImage: "hand.raised")
+                    }
+                }
+
+                // MARK: - About
+                Section("About") {
+                    HStack {
+                        Text("Version")
+                        Spacer()
+                        Text(appVersion)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
-
-            Section("Agency Directory") {
-                NavigationLink("View All Agencies") { AgencyDirectoryView() }
-            }
-
-            Section("About") {
-                LabeledContent("Version", value: "1.0.0")
-                LabeledContent("Build", value: "1")
-                LabeledContent("Platform", value: "iOS SwiftUI")
+            .navigationTitle("Settings")
+            .task {
+                await callKitManager.checkAuthorizationStatus()
             }
         }
-        .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.large)
     }
+
+    // MARK: - Helpers
+
+    @ViewBuilder
+    private var callIdentificationStatusLabel: some View {
+        switch callKitManager.authorizationStatus {
+        case .enabled:
+            Text("Enabled").foregroundStyle(.green)
+        case .disabled:
+            Text("Disabled").foregroundStyle(.red)
+        case .restricted:
+            Text("Restricted").foregroundStyle(.orange)
+        case .unknown:
+            Text("Not Set Up").foregroundStyle(.secondary)
+        @unknown default:
+            Text("Unknown").foregroundStyle(.secondary)
+        }
+    }
+
+    private var appVersion: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "—"
+        return "\(version) (\(build))"
+    }
+}
+
+// MARK: - Preview
+
+#Preview {
+    SettingsView()
 }
