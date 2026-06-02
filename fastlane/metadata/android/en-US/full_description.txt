@@ -1,0 +1,27 @@
+ScamShield LE is your intelligent, always-on guardian against phone scams and fraudulent callers.
+
+Powered by advanced AI, ScamShield LE analyzes incoming calls in real time and instantly alerts you when suspicious scam patterns are detected, before you lose a single dollar or share any personal information.
+
+KEY FEATURES
+
+Real-Time AI Detection
+ScamShield LE listens during live calls and uses on-device AI analysis to identify common scam techniques including impersonation, urgency pressure tactics, and requests for personal or financial information.
+
+Instant Alerts
+Receive immediate notifications the moment a potential scam is detected, giving you the power to hang up and stay safe.
+
+Scam Call History
+Every flagged call is logged with details so you can review past threats and build awareness of scam patterns targeting you.
+
+Runs in the Background
+ScamShield LE works silently without interrupting your daily routine. It activates automatically when calls come in.
+
+Privacy First
+Your audio and call data are processed entirely on your device. Nothing is uploaded, shared, or stored in the cloud.
+
+PERMISSIONS EXPLAINED
+Phone: Required to detect when a call is incoming and to monitor the call state.
+Microphone: Required to analyze the audio of live calls for scam indicators.
+Notifications: Required to send you real-time scam alerts.
+
+Stay safe. Stay protected. ScamShield LE.
