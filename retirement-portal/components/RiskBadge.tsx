@@ -1,0 +1,3 @@
+import { RiskLevel } from '../lib/types';
+const MAP:Record<RiskLevel,string> = {critical:'bg-red-900/50 text-red-300 border-red-700',high:'bg-orange-900/50 text-orange-300 border-orange-700',medium:'bg-yellow-900/50 text-yellow-300 border-yellow-700',low:'bg-green-900/50 text-green-300 border-green-700'};
+export default function RiskBadge({level}:{level:RiskLevel}){return <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${MAP[level]}`}>{level.charAt(0).toUpperCase()+level.slice(1)}</span>;}

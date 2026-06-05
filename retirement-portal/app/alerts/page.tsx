@@ -1,0 +1,12 @@
+'use client';
+import { useEffect, useState } from 'react';
+import RiskBadge from '../../components/RiskBadge';
+import { Alert, RiskLevel } from '../../lib/types';
+const MOCK_ALERTS:Alert[]=[{id:'a1',facilityId:'f1',residentId:'r3',residentName:'Margaret Ellis',room:'305C',riskScore:91,riskLevel:'critical',callType:'gov_impersonation',transcript:'Caller claimed to be IRS agent demanding immediate payment…',actionTaken:'Blocked',acknowledged:false,createdAt:new Date(Date.now()-300000).toISOString()},{id:'a2',facilityId:'f1',residentId:'r1',residentName:'Dorothy Banks',room:'204A',riskScore:78,riskLevel:'high',callType:'scam_call',transcript:'Caller offering fake Medicare supplement plan…',actionTaken:'Silenced',acknowledged:false,createdAt:new Date(Date.now()-900000).toISOString()}];
+export default function AlertsPage(){
+  const [alerts,setAlerts]=useState<Alert[]>(MOCK_ALERTS);
+  useEffect(()=>{const t=setInterval(()=>setAlerts(a=>[...a]),30000);return()=>clearInterval(t);},[]);
+  const ack=(id:string)=>setAlerts(a=>a.map(x=>x.id===id?{...x,acknowledged:true,acknowledgedBy:'You'}:x));
+  const unacked=alerts.filter(a=>!a.acknowledged).length;
+  return(<div><div className="mb-6"><h1 className="text-2xl font-bold text-white">Alerts</h1><p className="text-gray-400 text-sm mt-1">{unacked} unacknowledged alert{unacked!==1?'s':''}</p></div><div className="space-y-3">{alerts.map(alert=><div key={alert.id} className={`bg-gray-900 rounded-xl p-5 border ${alert.acknowledged?'border-gray-800 opacity-60':'border-red-800'}`}><div className="flex items-start justify-between"><div className="flex items-center gap-3"><RiskBadge level={alert.riskLevel as RiskLevel}/><div><p className="text-sm font-semibold text-white">{alert.residentName} <span className="text-gray-400 font-normal">· Room {alert.room}</span></p><p className="text-xs text-gray-400 mt-0.5">Score: {alert.riskScore} · {alert.actionTaken} · {new Date(alert.createdAt).toLocaleTimeString()}</p></div></div>{!alert.acknowledged&&<button onClick={()=>ack(alert.id)} className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg">Acknowledge</button>}</div><p className="text-xs text-gray-500 mt-3 line-clamp-2">{alert.transcript}</p></div>)}</div></div>);
+}

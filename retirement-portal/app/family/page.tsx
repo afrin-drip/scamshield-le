@@ -1,0 +1,6 @@
+'use client';
+import { useState } from 'react';
+export default function FamilyPage(){
+  const [notifs,setNotifs]=useState({alerts:true,reports:false});
+  return(<div><div className="mb-6"><h1 className="text-2xl font-bold text-white">Family Contacts</h1><p className="text-gray-400 text-sm mt-1">Manage notification settings per resident</p></div><div className="bg-gray-900 rounded-xl p-6"><h2 className="text-sm font-semibold text-white mb-4">Dorothy Banks — Room 204A</h2><div className="space-y-3">{[{key:'alerts',label:'Alert Notifications',desc:'Notify on high-risk calls'},{key:'reports',label:'Monthly Reports',desc:'Send monthly summary'}].map(({key,label,desc})=><div key={key} className="flex items-center justify-between py-3 border-b border-gray-800"><div><p className="text-sm text-white">{label}</p><p className="text-xs text-gray-400">{desc}</p></div><button onClick={()=>setNotifs(n=>({...n,[key]:!n[key as keyof typeof n]}))} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${notifs[key as keyof typeof notifs]?'bg-red-600':'bg-gray-700'}`}><span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${notifs[key as keyof typeof notifs]?'translate-x-6':'translate-x-1'}`}/></button></div>)}</div></div></div>);
+}

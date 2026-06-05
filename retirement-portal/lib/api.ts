@@ -1,0 +1,1 @@
+export async function apiFetch<T>(path:string,init?:RequestInit):Promise<T>{const res=await fetch(path,{...init,headers:{'Content-Type':'application/json',...(init?.headers??{})}});if(!res.ok){const e=await res.json().catch(()=>({error:res.statusText}));throw new Error((e as any).error??'Request failed');}return res.json();}
