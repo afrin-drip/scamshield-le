@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --scam-red: #D32F2F; }
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+html { scroll-behavior: smooth; }
+
+@layer utilities {
+  .text-gradient-red {
+    background: linear-gradient(135deg, #EF5350, #D32F2F);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
