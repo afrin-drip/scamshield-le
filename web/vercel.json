@@ -8,7 +8,6 @@
     "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN": "@firebase_auth_domain",
     "NEXT_PUBLIC_FIREBASE_PROJECT_ID": "@firebase_project_id"
   },
-  "regions": [
-    "iad1"
-  ]
+  "regions": ["iad1"],
+  "alias": ["family.scamshieldle.com"]
 }
