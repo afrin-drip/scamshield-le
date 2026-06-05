@@ -1,0 +1,6 @@
+{
+  "name": "scamshieldle-landing",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "alias": ["scamshieldle.com", "www.scamshieldle.com"]
+}
