@@ -7,7 +7,6 @@
     "NEXT_PUBLIC_LE_API_URL": "@le_api_url",
     "NEXT_PUBLIC_MAPBOX_TOKEN": "@mapbox_token"
   },
-  "regions": [
-    "iad1"
-  ]
+  "regions": ["iad1"],
+  "alias": ["portal.scamshieldle.com"]
 }
