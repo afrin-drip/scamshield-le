@@ -8,4 +8,14 @@ import javax.inject.Inject; import javax.inject.Singleton
     suspend fun removeMember(id: Long) = dao.deleteById(id)
     suspend fun setProtected(id: Long, v: Boolean) = dao.setProtected(id, v)
     suspend fun setNotify(id: Long, v: Boolean) = dao.setNotify(id, v)
+
+    suspend fun setSmsEnabled(id: Long, enabled: Boolean) {
+        val member = dao.getById(id) ?: return
+        dao.update(member.copy(smsEnabled = enabled))
+    }
+
+    suspend fun setGuardianPhone(id: Long, phone: String) {
+        val member = dao.getById(id) ?: return
+        dao.update(member.copy(guardianPhone = phone))
+    }
 }
