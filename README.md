@@ -1,309 +1,201 @@
-# 🚨 ScamShield LE
+# 🛡 ScamShield LE
 
-**Real-time protection against law enforcement impersonation scams**
+> Real-time scam call detection and intelligence platform for law enforcement agencies, senior living facilities, and families.
 
-[![Platform](https://img.shields.io/badge/Platform-Android%2026+-green.svg)](https://developer.android.com)
-[![Language](https://img.shields.io/badge/Language-Kotlin-blue.svg)](https://kotlinlang.org)
-[![AI](https://img.shields.io/badge/AI-Claude%20API-orange.svg)](https://console.anthropic.com)
-[![License](https://img.shields.io/badge/License-TBD-lightgrey.svg)](#license)
-
----
-
-## Quick Start
-
-1. Clone repo + run `gradle wrapper --gradle-version 8.7`
-2. Add `CLAUDE_API_KEY=sk-ant-...` to `local.properties`
-3. Place `google-services.json` from Firebase in `app/`
-4. Open in Android Studio → sync → run on device (API 26+)
-5. Test with Settings → Simulation Mode → FBI Warrant script
-
-See [FIRST_BUILD_GUIDE.md](FIRST_BUILD_GUIDE.md) for full details.
+![Build](https://img.shields.io/badge/build-passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) ![Android](https://img.shields.io/badge/platform-Android-green) ![iOS](https://img.shields.io/badge/platform-iOS-lightgrey) ![Web](https://img.shields.io/badge/platform-Web-blue)
 
 ---
 
 ## Overview
 
-ScamShield LE is a fully-featured Android app that protects users from **law enforcement impersonation scams**. Scammers pose as police, FBI agents, U.S. Marshals, or court officials and pressure victims into sending money via gift cards, crypto, or wire transfer.
+ScamShield LE uses a two-layer detection engine — on-device speech recognition plus Claude API semantic analysis — to identify scam calls in real time. Anonymized signals are reported to law enforcement agencies and senior care facilities through dedicated portals, while families get push notifications and a shared dashboard.
 
-> **Core Rule:** Real law enforcement does NOT demand immediate payment over the phone to avoid arrest. If that happens — hang up.
+**Three audiences, one platform:**
+- 👮 **Law enforcement** — jurisdiction-level incident maps, pattern analysis, exportable case data
+- 🏠 **Senior living facilities** — per-resident monitoring, staff alert feeds, family notifications
+- 👨‍👩‍👧 **Families** — real-time notifications when a protected member receives a high-risk call
+
+---
+
+## Architecture
+
+| Module | Tech | Port | Status |
+|--------|------|------|--------|
+| `app/` | Android · Kotlin · Jetpack Compose | — | ✅ Production-ready |
+| `ios/` | iOS · SwiftUI · CallKit | — | ✅ Complete |
+| `shared/` | Kotlin Multiplatform (KMM) | — | ✅ Complete |
+| `api/` | Node.js · Express · Firestore | 4000 | ✅ Complete |
+| `le-portal/` | Next.js 14 · Mapbox GL | 3001 | ✅ Complete |
+| `retirement-portal/` | Next.js 14 · Tailwind | 3002 | ✅ Complete |
+| `web/` | Next.js 14 · Firebase Auth | 3000 | ⚠️ Basic |
+| `landing/` | Next.js 14 · Tailwind | — | ✅ Complete |
 
 ---
 
 ## Features
 
-### 🎤 Two-Layer Real-Time Detection
-**Layer 1 — Android SpeechRecognizer (Primary)**
-Fast, free, on-device transcription with zero latency.
+### Android App
+- **Two-layer detection:** SpeechRecognizer (Layer 1) + Claude API semantic analysis (Layer 2)
+- **Risk scoring:** Law enforcement claims, warrant language, payment requests, urgency phrases
+- **Risk thresholds:** Low <40 · Medium 40–70 · High 70–90 · Critical >90
+- **CallScreeningService** (API 29+): auto-blocks >0.8 confidence, silences >0.5
+- **PassiveDetectionService** for always-on background monitoring
+- **Scam Number Intelligence:** local Room DB synced every 6 hours from the cloud
+- **Screens:** Home, Monitoring, Alert, History, Agency Directory, Report, Settings, Family, Analytics, Simulation, Onboarding, Subscription
+- **Infrastructure:** Hilt DI, Room DB, Firestore sync, FCM, Twilio SMS fallback, Google Play Billing 6.x (Free/Pro/Family), Glance widget, deep links, accessibility, Spanish + French localization, 70+ unit tests
 
-**Layer 2 — Claude API Enhancement (Backup)**
-Kicks in when STT confidence is low. Catches manipulation tactics, indirect threats, and edge cases keyword matching misses.
+### iOS App
+- SwiftUI with CallKit caller ID labeling and number blocking
+- StoreKit 2 in-app subscriptions
+- Firebase Crashlytics, Performance, Analytics, FCM
 
-### 🧠 Detection Logic
+### LE Portal
+- Mapbox GL dark map with 341 US area code markers (Critical / Likely Scam / Suspicious)
+- Heatmap layer, state GeoJSON overlay, time filters (7d/30d/90d/All)
+- Incidents table with CSV export, incident detail modal with risk gauge
+- Pattern analysis: signal trends, peak-hours heatmap, script clusters
+- Real-time alert feed, report generation, agency management (super-admin)
 
-| Signal | Score |
-|---|---|
-| Law enforcement claim (police, FBI, marshal…) | +25 |
-| Warrant / arrest language | +20 |
-| Request for money | +40 |
-| Suspicious payment method (gift card, crypto, Zelle, wire…) | +60 |
-| Urgency / pressure ("don't hang up", "stay on the line") | +20 |
+### Retirement Home Portal
+- Multi-tenant: each facility is isolated by `facilityId` from JWT claims
+- Role-based auth: `super_admin` · `facility_admin` · `staff` (read-only)
+- Resident table with risk badges, protection status, app-installed indicator
+- Real-time alert feed with acknowledge workflow (auto-refreshes every 30s)
+- Per-resident family contact management + per-contact notification toggles
+- Monthly/quarterly CSV report export
+- Facilities view (super-admin: all tenants)
 
-**Risk Levels:** 40+ ⚠️ Suspicious · 70+ 🚨 Likely Scam · 90+ 🚨🚨 Critical Alert
-
-### 📱 App Screens
-- **Home** — Start monitoring, view history, access settings
-- **Monitoring** — Live risk meter, real-time transcript, signal chips, analysis source indicator
-- **Alert** — Full-screen red alert with hang-up instruction, verified agency callback, FTC/FBI reporting
-- **History** — Incident log with risk scores, signals, timestamps, one-tap reporting
-- **Agency Directory** — 10 verified federal agencies with direct call and website buttons
-- **Report Screen** — FTC/IC3 report workflow with optional details, share report summary
-- **Settings** — Passive detection toggle, alert threshold slider, sound/vibration, family mode
-- **Family Protection** — Add/manage family members with per-member monitoring and notification toggles
-- **Analytics Dashboard** — Canvas bar chart, risk distribution, signal frequency rankings
-- **Simulation Mode** — 5 realistic scam scripts with live risk scoring
-- **Onboarding** — 4-step animated first-run flow
-
-### 🛡️ Passive Detection
-Enable in Settings to automatically monitor all incoming calls without tapping "Start Monitoring."
-
-> ⚠️ Check your state's call recording laws before enabling.
-
-### 👨‍👩‍👧 Family Protection Mode
-Add family members and receive push notifications when a scam is detected on their call. Powered by Firebase Cloud Messaging.
-
-### 📞 CallScreeningService (API 29+)
-Set ScamShield as your default call screening app via Android's RoleManager — no speakerphone required.
-
-### 📊 Scam Analytics
-Track total incidents, most common signals, calls over time, risk score distribution.
-
-### 🎭 Demo / Simulation Mode
-5 built-in scam scripts for demos, investor pitches, or family training.
-
-### 🏛️ Verified Agency Directory
-10 verified federal agency contacts with one-tap calling: FTC, FBI/IC3, U.S. Marshals, DEA, IRS CI, SSA OIG, CFPB, and more.
-
-### 📋 FTC / IC3 Reporting
-From any incident, tap "Report" to submit directly to FTC's ReportFraud.gov or FBI's IC3.gov.
-### 🔢 Scam Number Intelligence
-Cross-references incoming calls against a crowd-sourced database of known scam numbers. Warns before you even answer — no monitoring needed. Integrates with CallScreeningService to auto-block high-confidence numbers.
-
-### 🏛️ Law Enforcement Data API
-ScamShield shares anonymized scam incident data with registered law enforcement agencies via a secure REST API. Agencies can query incident patterns, trending signals, and area code hotspots to prioritize investigations. See `api/` for the full backend.
-
-### 📱 SMS Backup Alerts (Twilio)
-When FCM push notifications fail, ScamShield falls back to SMS via Twilio to ensure family guardians are always notified, even without an internet connection.
+### CISA/FTC Live Feed
+| Feed | Source | Schedule |
+|------|--------|----------|
+| FTC DNC Complaints | api.ftc.gov/v0/dnc-complaints | Weekdays 13:00 UTC |
+| CISA Advisories | cisa.gov/uscert/ncas/all.xml | Every 6 hours |
 
 ---
 
-## Tech Stack
+## Quick Start
 
-| Layer | Technology |
-|---|---|
-| Language | Kotlin |
-| UI | Jetpack Compose + Material3 (dark theme) |
-| DI | Hilt |
-| Database | Room (incidents + family members) |
-| AI — Primary | Android SpeechRecognizer |
-| AI — Enhancement | Claude API (`claude-3-5-haiku-20241022`) |
-| Audio | Android `AudioRecord` (16kHz, mono, PCM) |
-| Notifications | Firebase Cloud Messaging (FCM) |
-| Sync | Firestore (real-time web dashboard) |
-| Billing | Google Play Billing 6.x |
-| Shared Logic | Kotlin Multiplatform (RiskEngine, AgencyDirectory) |
-| Network | OkHttp |
-| Architecture | MVVM + StateFlow + Coroutines |
+### Prerequisites
+- Node.js 20+, npm 10+
+- Android Studio (for `app/`)
+- Xcode 15+ (for `ios/`)
+- Docker + Docker Compose (optional, for full-stack local dev)
+- Firebase project with Firestore enabled
+- Mapbox token (for LE Portal map)
 
----
-
-## Project Structure
-
-```
-scamshield-le/
-├── app/                    # Android app (Kotlin/Compose)
-├── shared/                 # Kotlin Multiplatform shared module
-│   └── commonMain/         # RiskEngine, AgencyDirectory, ScamScripts
-├── ios/                    # iOS app (SwiftUI)
-│   ├── ScamShieldLE/       # Main iOS source
-│   └── ScamShieldLETests/  # XCTest suite
-└── web/                    # Next.js 14 family dashboard
-```
-
----
-
-## Setup
-
-### Requirements
-- Android Studio Hedgehog (2023.1.1+)
-- JDK 17
-- Android SDK API 26+
-- Claude API key — [console.anthropic.com](https://console.anthropic.com)
-- Firebase project — [console.firebase.google.com](https://console.firebase.google.com)
-
-### Quick Setup
+### Clone & install
 ```bash
 git clone https://github.com/afrin-drip/scamshield-le.git
 cd scamshield-le
-gradle wrapper --gradle-version 8.7   # required — generates wrapper jar
 ```
 
-Add to `local.properties`:
-```
-CLAUDE_API_KEY=sk-ant-your-key-here
-FIREBASE_SERVER_KEY=your-firebase-server-key
+### Run individual modules
+```bash
+cd api && npm install && npm run dev          # API on :4000
+cd le-portal && npm install && npm run dev    # LE Portal on :3001
+cd retirement-portal && npm install && npm run dev  # Retirement on :3002
+cd web && npm install && npm run dev          # Family dashboard on :3000
+cd landing && npm install && npm run dev      # Landing site
 ```
 
-Place `google-services.json` (from Firebase) in the `app/` folder, then open in Android Studio and run.
-
-## Architecture
-
+### Docker Compose (all services)
+```bash
+cp .env.example .env  # fill in your values
+make dev              # or: docker compose up --build
 ```
-ScamShield Platform
-├── Android App (Kotlin/Compose) ─── Real-time detection
-├── iOS App (SwiftUI) ─────────────── iOS parity
-├── KMM Shared Module ─────────────── Shared business logic
-├── Web Dashboard (Next.js) ───────── Family monitoring
-└── LE Data API (Node.js/Express) ─── Law enforcement integration
-         │
-         └── Firebase Platform
-               ├── Firestore ──── Data sync + LE data
-               ├── Auth ─────────── User identity
-               ├── FCM ──────────── Push notifications
-               └── Crashlytics ─── Crash reporting
-```
+
+| Service | URL |
+|---------|-----|
+| API | http://localhost:4000 |
+| LE Portal | http://localhost:3001 |
+| Retirement Portal | http://localhost:3002 |
+| Family Dashboard | http://localhost:3000 |
 
 ---
 
-## Roadmap
+## Environment Variables
 
-| Phase | Features | Status |
-|---|---|---|
-| 1 | Core UI, rules engine, audio capture, Claude API, Room DB, alert system | ✅ Complete |
-| 2 | Android SpeechRecognizer (Layer 1) + Claude semantic enhancement (Layer 2) | ✅ Complete |
-| 3 | Verified agency directory, FTC/IC3 reporting workflow | ✅ Complete |
-| 4 | Family protection mode, passive background detection, settings screen | ✅ Complete |
-| 5A | Onboarding flow, app icon, Play Store prep | ✅ Complete |
-| 5B | Smart family notifications via FCM | ✅ Complete |
-| 5C | Android CallScreeningService (API 29+) | ✅ Complete |
-| 5D | Scam analytics dashboard | ✅ Complete |
-| 5E | Demo/simulation mode with 5 scam scripts | ✅ Complete |
-| 6A | Google Play Billing (Free / Pro $2.99 / Family $4.99) | ✅ Complete |
-| 6B | KMM Shared Module (RiskEngine + AgencyDirectory shared with iOS) | ✅ Complete |
-| 6C | Android Unit Tests (70+ test cases) | ✅ Complete |
-| 6D | iOS Unit Tests (XCTest suite) | ✅ Complete |
-| 6E | iOS StoreKit 2 (in-app subscriptions) | ✅ Complete |
-| 6F | Firestore sync (real-time web dashboard) | ✅ Complete |
-| 6G | Firebase Crashlytics + Performance + Analytics | ✅ Complete |
-| 6H | Deep Linking + FCM Notifications | ✅ Complete |
-| 6I | Accessibility (TalkBack, Spanish/French localization) | ✅ Complete |
-| 6J | Android Glance Widget | ✅ Complete |
-| 6K | Web Dashboard (Next.js 14) | ✅ Complete |
-| 6L | iOS CallKit integration | ✅ Complete |
-| 7A | Law Enforcement Data Sharing API (Node.js/Express backend) | ✅ Complete |
-| 7B | Scam Number Intelligence Database (crowd-sourced + auto-blocking) | ✅ Complete |
-| 7C | Twilio SMS Backup Notifications | ✅ Complete |
-| 7D | iOS App Store Submission Preparation | ✅ Complete |
-| 8A | WatchOS companion app | 🔜 Planned |
-| 8B | CISA/FTC live data feed integration | 🔜 Planned |
-| 8C | Multi-tenant enterprise dashboard | 🔜 Planned |
+### API (`api/.env`)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `JWT_SECRET` | ✅ | Secret for signing JWTs |
+| `FIRESTORE_PROJECT_ID` | ✅ | GCP project ID |
+| `PORT` | ✅ | Server port (default 4000) |
+| `FTC_API_KEY` | ⚠️ recommended | Free key from api.data.gov |
+
+### LE Portal (`le-portal/.env.local`)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `LE_API_URL` | ✅ | Base URL of the LE API |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | ✅ | Mapbox GL access token |
+
+### Retirement Portal (`retirement-portal/.env.local`)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `JWT_SECRET` | ✅ | Must match API JWT_SECRET |
+| `LE_API_URL` | ✅ | Base URL of the LE API |
+
+### Landing (`landing/.env.local`)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `RESEND_API_KEY` | ✅ | Resend API key for contact form |
+| `TO_EMAIL` | ✅ | Destination email for submissions |
 
 ---
 
-## Monetization
+## API Reference
 
-- **Free** — Manual monitoring, basic alert, agency directory
-- **Pro ($2.99/mo)** — Passive detection, analytics dashboard, simulation mode
-- **Family ($4.99/mo)** — 5 protected numbers, guardian notifications, full history
-- **Enterprise** — White-label for county sheriff offices, banks, senior living facilities
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | /health | None | Service health + uptime |
+| GET | /incidents | JWT | Paginated incidents, CSV export |
+| GET | /patterns | JWT | Script clusters, peak hours heatmap |
+| GET | /stats | JWT | Weekly + state-level statistics |
+| POST | /agencies | JWT | Register a new agency |
+| GET | /agencies | JWT (admin) | List all agencies |
+| GET | /feeds/status | JWT | CISA/FTC sync status + record counts |
+| POST | /feeds/sync | JWT | Manually trigger feed ingest |
 
----
-
-## Documentation
-
-| File | Contents |
-|---|---|
-| `FIRST_BUILD_GUIDE.md` | Complete device setup and first build walkthrough |
-| `DEVICE_TESTING_CHECKLIST.md` | Quick verification checklist |
-| `FIREBASE_SETUP.md` | Step-by-step Firebase + FCM setup guide |
-| `GRADLE_SETUP.md` | Gradle wrapper, API keys, first build |
-| `PLAY_STORE_LISTING.md` | App title, description, keywords |
-| `PRIVACY_POLICY.md` | Full privacy policy |
-| `RELEASE_CHECKLIST.md` | Play Store submission checklist |
-| `SIGNING_INSTRUCTIONS.md` | Keystore generation and signing config |
-| `CRASHLYTICS_SETUP.md` | Firebase Crashlytics setup for both platforms |
-| `IOS_PORT_PLAN.md` | Full iOS/SwiftUI port plan |
-| `IOS_MVP_SPEC.md` | iOS MVP spec with SwiftUI stubs |
-| `KMM_OPTION.md` | Kotlin Multiplatform analysis |
-| `BUSINESS_PLAN.md` | Investor-ready business plan |
-| `MONETIZATION.md` | Detailed monetization strategy |
-| `PITCH_DECK_OUTLINE.md` | 12-slide pitch deck outline |
-| `api/README.md` | Law Enforcement API documentation and endpoint reference |
-| `TWILIO_SETUP.md` | Twilio SMS backup notification setup |
-| `IOS_APP_STORE_SUBMISSION.md` | Complete iOS App Store submission guide |
-| `DEPLOY_VERCEL.md` | Complete Vercel deployment guide for all web apps |
+> **Privacy:** area codes only (never full phone numbers), 100-char transcript excerpts, one-way anonymized call IDs.
 
 ---
 
-## Privacy
+## Deployment
 
-- Monitoring is **user-initiated** by default — no background recording without explicit opt-in
-- Transcripts sent transiently to Claude API and **not stored by Anthropic**
-- Family member data stored **locally only** on device
-- Designed for one-party consent compliance (e.g., Texas)
+### Vercel (web modules)
+```bash
+cd le-portal && npx vercel --prod          # → le-portal.scamshieldle.com
+cd retirement-portal && npx vercel --prod  # → care.scamshieldle.com
+cd web && npx vercel --prod                # → app.scamshieldle.com
+cd landing && npx vercel --prod            # → scamshieldle.com
+```
+
+### Cloud Run (API)
+```bash
+gcloud builds submit ./api --tag gcr.io/YOUR_PROJECT/scamshield-api
+gcloud run deploy scamshield-api \
+  --image gcr.io/YOUR_PROJECT/scamshield-api \
+  --region us-central1 \
+  --platform managed \
+  --set-env-vars JWT_SECRET=...,FIRESTORE_PROJECT_ID=...
+```
+
+Grant the Cloud Run service account `roles/datastore.user` on your GCP project.
 
 ---
 
 ## Contributing
 
-Areas most needed: iOS SwiftUI polish, Kotlin Multiplatform refinement, additional scam script types, state-specific legal compliance review, accessibility improvements.
+1. Fork and create a branch: `feature/your-feature` or `fix/issue-description`
+2. Keep changes scoped to one module per PR when possible
+3. New API endpoints must include auth middleware and rate limiting
+4. Privacy constraint: never log or store full phone numbers — area codes only
+5. Run `make test` before submitting
+
+**Good first issues:** contact form styling, iOS audit simulation screen, family dashboard analytics, Android package cleanup (notification/ vs notifications/)
 
 ---
-
----
-
-## 🌐 Live Deployments
-
-Both web apps deploy to Vercel with one command. See [DEPLOY_VERCEL.md](DEPLOY_VERCEL.md) for full instructions.
-
-| App | URL | Status |
-|---|---|---|
-| Family Dashboard | [scamshield-family-dashboard.vercel.app](https://scamshield-family-dashboard.vercel.app) | Ready to deploy |
-| LE Portal | [scamshield-le-portal.vercel.app](https://scamshield-le-portal.vercel.app) | Ready to deploy |
-| LE Data API | Google Cloud Run | Ready to deploy |
-
-### Quick Deploy
-
-**Family Dashboard:**
-```bash
-cd web && npm install && vercel --prod
-```
-
-**LE Portal (with GPS map):**
-```bash
-cd le-portal && npm install && vercel --prod
-```
-
-**LE Backend API:**
-```bash
-cd api && bash ../api/deploy-cloudrun.sh
-```
-
-Requirements before deploying:
-- **Vercel account** (free) — [vercel.com](https://vercel.com)
-- **Firebase project** — add `google-services.json` + `web/.env.local`
-- **Mapbox token** (free) — [mapbox.com](https://mapbox.com) for the LE Portal GPS map
-- See [DEPLOY_VERCEL.md](DEPLOY_VERCEL.md) for all environment variables
-
----
-
 
 ## License
 
-TBD
-
----
-
-> *"Law enforcement does not demand immediate payment over the phone to avoid arrest. Do not pay. Hang up and call the agency from an official number."*
-> — FTC, FBI, U.S. Marshals Service
-
-**ScamShield LE — stop the scam before it happens.**
+MIT © ScamShield LE Contributors — see [LICENSE](LICENSE)
