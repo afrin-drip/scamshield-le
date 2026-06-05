@@ -85,6 +85,14 @@ Track total incidents, most common signals, calls over time, risk score distribu
 
 ### 📋 FTC / IC3 Reporting
 From any incident, tap "Report" to submit directly to FTC's ReportFraud.gov or FBI's IC3.gov.
+### 🔢 Scam Number Intelligence
+Cross-references incoming calls against a crowd-sourced database of known scam numbers. Warns before you even answer — no monitoring needed. Integrates with CallScreeningService to auto-block high-confidence numbers.
+
+### 🏛️ Law Enforcement Data API
+ScamShield shares anonymized scam incident data with registered law enforcement agencies via a secure REST API. Agencies can query incident patterns, trending signals, and area code hotspots to prioritize investigations. See `api/` for the full backend.
+
+### 📱 SMS Backup Alerts (Twilio)
+When FCM push notifications fail, ScamShield falls back to SMS via Twilio to ensure family guardians are always notified, even without an internet connection.
 
 ---
 
@@ -147,6 +155,23 @@ FIREBASE_SERVER_KEY=your-firebase-server-key
 
 Place `google-services.json` (from Firebase) in the `app/` folder, then open in Android Studio and run.
 
+## Architecture
+
+```
+ScamShield Platform
+├── Android App (Kotlin/Compose) ─── Real-time detection
+├── iOS App (SwiftUI) ─────────────── iOS parity
+├── KMM Shared Module ─────────────── Shared business logic
+├── Web Dashboard (Next.js) ───────── Family monitoring
+└── LE Data API (Node.js/Express) ─── Law enforcement integration
+         │
+         └── Firebase Platform
+               ├── Firestore ──── Data sync + LE data
+               ├── Auth ─────────── User identity
+               ├── FCM ──────────── Push notifications
+               └── Crashlytics ─── Crash reporting
+```
+
 ---
 
 ## Roadmap
@@ -174,8 +199,13 @@ Place `google-services.json` (from Firebase) in the `app/` folder, then open in 
 | 6J | Android Glance Widget | ✅ Complete |
 | 6K | Web Dashboard (Next.js 14) | ✅ Complete |
 | 6L | iOS CallKit integration | ✅ Complete |
-| 7 | App Store submission (iOS) | 🔜 Planned |
-| 8 | Law enforcement data sharing API | 🔜 Planned |
+| 7A | Law Enforcement Data Sharing API (Node.js/Express backend) | ✅ Complete |
+| 7B | Scam Number Intelligence Database (crowd-sourced + auto-blocking) | ✅ Complete |
+| 7C | Twilio SMS Backup Notifications | ✅ Complete |
+| 7D | iOS App Store Submission Preparation | ✅ Complete |
+| 8A | WatchOS companion app | 🔜 Planned |
+| 8B | CISA/FTC live data feed integration | 🔜 Planned |
+| 8C | Multi-tenant enterprise dashboard | 🔜 Planned |
 
 ---
 
@@ -207,6 +237,9 @@ Place `google-services.json` (from Firebase) in the `app/` folder, then open in 
 | `BUSINESS_PLAN.md` | Investor-ready business plan |
 | `MONETIZATION.md` | Detailed monetization strategy |
 | `PITCH_DECK_OUTLINE.md` | 12-slide pitch deck outline |
+| `api/README.md` | Law Enforcement API documentation and endpoint reference |
+| `TWILIO_SETUP.md` | Twilio SMS backup notification setup |
+| `IOS_APP_STORE_SUBMISSION.md` | Complete iOS App Store submission guide |
 
 ---
 
