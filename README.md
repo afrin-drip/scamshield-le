@@ -240,6 +240,7 @@ ScamShield Platform
 | `api/README.md` | Law Enforcement API documentation and endpoint reference |
 | `TWILIO_SETUP.md` | Twilio SMS backup notification setup |
 | `IOS_APP_STORE_SUBMISSION.md` | Complete iOS App Store submission guide |
+| `DEPLOY_VERCEL.md` | Complete Vercel deployment guide for all web apps |
 
 ---
 
@@ -257,6 +258,44 @@ ScamShield Platform
 Areas most needed: iOS SwiftUI polish, Kotlin Multiplatform refinement, additional scam script types, state-specific legal compliance review, accessibility improvements.
 
 ---
+
+---
+
+## 🌐 Live Deployments
+
+Both web apps deploy to Vercel with one command. See [DEPLOY_VERCEL.md](DEPLOY_VERCEL.md) for full instructions.
+
+| App | URL | Status |
+|---|---|---|
+| Family Dashboard | [scamshield-family-dashboard.vercel.app](https://scamshield-family-dashboard.vercel.app) | Ready to deploy |
+| LE Portal | [scamshield-le-portal.vercel.app](https://scamshield-le-portal.vercel.app) | Ready to deploy |
+| LE Data API | Google Cloud Run | Ready to deploy |
+
+### Quick Deploy
+
+**Family Dashboard:**
+```bash
+cd web && npm install && vercel --prod
+```
+
+**LE Portal (with GPS map):**
+```bash
+cd le-portal && npm install && vercel --prod
+```
+
+**LE Backend API:**
+```bash
+cd api && bash ../api/deploy-cloudrun.sh
+```
+
+Requirements before deploying:
+- **Vercel account** (free) — [vercel.com](https://vercel.com)
+- **Firebase project** — add `google-services.json` + `web/.env.local`
+- **Mapbox token** (free) — [mapbox.com](https://mapbox.com) for the LE Portal GPS map
+- See [DEPLOY_VERCEL.md](DEPLOY_VERCEL.md) for all environment variables
+
+---
+
 
 ## License
 
