@@ -1,0 +1,40 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── known_scam_numbers ────────────────────────────────────────────────────
+    match /known_scam_numbers/{numberId} {
+
+      // Any authenticated user can read the scam number list
+      allow read: if request.auth != null;
+
+      // Authenticated users can create or update entries (report new scam numbers)
+      // Enforce the expected schema and prevent trust-inflation attacks
+      allow create, update: if request.auth != null
+        && request.resource.data.keys().hasAll(['number', 'areaCode', 'reportCount', 'lastSeen', 'confidence', 'scamType'])
+        && request.resource.data.number is string
+        && request.resource.data.areaCode is string
+        && request.resource.data.reportCount is int
+        && request.resource.data.reportCount >= 1
+        && request.resource.data.lastSeen is int
+        && request.resource.data.confidence is float
+        && request.resource.data.confidence >= 0.0
+        && request.resource.data.confidence <= 1.0
+        // Prevent users from inflating report counts beyond +1 per write
+        && (
+             !exists(/databases/$(database)/documents/known_scam_numbers/$(numberId))
+             || request.resource.data.reportCount == resource.data.reportCount + 1
+           );
+
+      // Only Cloud Functions (server SDK with admin privileges) can delete entries
+      // Client SDK writes cannot set __name__ or bypass auth to act as admin
+      allow delete: if false;
+    }
+
+    // Deny all other collections by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
