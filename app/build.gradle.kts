@@ -13,6 +13,9 @@ android {
         applicationId = "com.scamshield.le"
         minSdk = 26; targetSdk = 35; versionCode = 1; versionName = "1.0"
         buildConfigField("String", "CLAUDE_API_KEY", "\"${project.findProperty(\"CLAUDE_API_KEY\") ?: \"\"}\"")
+        buildConfigField("String", "TWILIO_ACCOUNT_SID", "\"${project.findProperty(\"TWILIO_ACCOUNT_SID\") ?: \"\"}\"")
+        buildConfigField("String", "TWILIO_AUTH_TOKEN", "\"${project.findProperty(\"TWILIO_AUTH_TOKEN\") ?: \"\"}\"")
+        buildConfigField("String", "TWILIO_FROM_NUMBER", "\"${project.findProperty(\"TWILIO_FROM_NUMBER\") ?: \"\"}\"")
     }
     signingConfigs {
         create("release") {
