@@ -3,57 +3,77 @@ package com.scamshield.le.service
 import android.telecom.Call
 import android.telecom.CallScreeningService
 import android.util.Log
-import com.scamshield.le.data.repository.ScamRepository
+import com.scamshield.le.intelligence.ScamIntelligenceManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
-/**
- * CallScreeningService implementation (API 29+).
- * Intercepts incoming calls and rejects high-risk numbers found in the scam database.
- */
 @AndroidEntryPoint
 class CallScreeningServiceImpl : CallScreeningService() {
 
-    @Inject
-    lateinit var scamRepository: ScamRepository
+    @Inject lateinit var scamIntelligenceManager: ScamIntelligenceManager
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
+    companion object {
+        private const val TAG = "CallScreeningService"
+        private const val BLOCK_THRESHOLD = 0.8f
+        private const val SILENCE_THRESHOLD = 0.5f
+    }
+
     override fun onScreenCall(callDetails: Call.Details) {
-        val handle = callDetails.handle
-        val phoneNumber = handle?.schemeSpecificPart ?: run {
-            Log.w(TAG, "onScreenCall: no phone number available, allowing call")
+        val phoneNumber = callDetails.handle?.schemeSpecificPart ?: run {
+            Log.w(TAG, "No phone number available for screening; allowing call")
             respondToCall(callDetails, CallResponse.Builder().build())
             return
         }
 
-        serviceScope.launch {
-            val scamEntry = scamRepository.findByPhoneNumber(phoneNumber)
-            val riskScore = scamEntry?.riskScore ?: 0
+        Log.d(TAG, "Screening call from $phoneNumber")
 
-            if (riskScore >= HIGH_RISK_THRESHOLD) {
-                Log.i(TAG, "Intercepted high-risk call from $phoneNumber (score=$riskScore) — rejecting")
-                val response = CallResponse.Builder()
-                    .setRejectCall(true)
-                    .setDisallowCall(true)
-                    .setSilenceCall(true)
-                    .setSkipCallLog(false)
-                    .setSkipNotification(false)
-                    .build()
+        serviceScope.launch {
+            try {
+                val result = scamIntelligenceManager.checkNumber(phoneNumber)
+                val response = buildScreeningResponse(phoneNumber, result.confidence, result.scamType, result.isKnownScam)
                 respondToCall(callDetails, response)
-            } else {
-                Log.d(TAG, "Call from $phoneNumber allowed (score=$riskScore)")
+            } catch (e: Exception) {
+                Log.e(TAG, "Screening check failed for $phoneNumber: ${e.message}")
+                // Fail open — allow the call rather than block on error
                 respondToCall(callDetails, CallResponse.Builder().build())
             }
         }
     }
 
-    companion object {
-        private const val TAG = "CallScreeningServiceImpl"
-        private const val HIGH_RISK_THRESHOLD = 70
+    private fun buildScreeningResponse(
+        phoneNumber: String,
+        confidence: Float,
+        scamType: String?,
+        isKnownScam: Boolean
+    ): CallResponse {
+        return when {
+            isKnownScam && confidence >= BLOCK_THRESHOLD -> {
+                Log.i(TAG, "BLOCKED $phoneNumber — confidence=$confidence type=$scamType")
+                CallResponse.Builder()
+                    .setRejectCall(true)
+                    .setDisallowCall(true)
+                    .setSkipCallLog(false)
+                    .setSkipNotification(false)
+                    .build()
+            }
+            confidence >= SILENCE_THRESHOLD -> {
+                Log.i(TAG, "SILENCED $phoneNumber — confidence=$confidence type=$scamType")
+                CallResponse.Builder()
+                    .setSilenceCall(true)
+                    .build()
+            }
+            else -> {
+                Log.d(TAG, "ALLOWED $phoneNumber — confidence=$confidence")
+                CallResponse.Builder().build()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceScope.cancel()
     }
 }
