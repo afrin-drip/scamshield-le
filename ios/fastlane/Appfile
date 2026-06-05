@@ -1,0 +1,4 @@
+app_identifier "com.scamshield.le"
+apple_id "your@email.com"
+team_id "YOUR_TEAM_ID"
+itc_team_id "YOUR_ITC_TEAM_ID"
