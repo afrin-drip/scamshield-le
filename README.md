@@ -225,10 +225,10 @@ cd landing && npx vercel --prod            # Ã¢ÂÂ scamshieldle.com
 ```bash
 gcloud builds submit ./api --tag gcr.io/YOUR_PROJECT/scamshield-api
 gcloud run deploy scamshield-api \
-  --image gcr.io/YOUR_PROJECT/scamshield-api \
-  --region us-central1 \
-  --platform managed \
-  --set-env-vars JWT_SECRET=...,FIRESTORE_PROJECT_ID=...
+--image gcr.io/YOUR_PROJECT/scamshield-api \
+--region us-central1 \
+--platform managed \
+--set-env-vars JWT_SECRET=...,FIRESTORE_PROJECT_ID=...
 ```
 
 Grant the Cloud Run service account `roles/datastore.user` on your GCP project.
