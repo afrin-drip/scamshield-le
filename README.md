@@ -352,7 +352,9 @@ Goal: Web interface for families monitoring protected members.
 - Incident detail pages with signal breakdown
 - Family member management (add/remove protected members)
 - Components: RiskBadge, IncidentCard, SignalChip, FamilyMemberRow
-- Expansion planned: analytics, subscription management, notification preferences
+- Analytics page -- 30-day detection trend (recharts LineChart), risk level breakdown (BarChart), KPI cards (calls blocked, top threat type, active days)
+- Subscription management page -- current plan from Firestore, Free/Pro/Family comparison table, upgrade/downgrade CTAs linked to billing.scamshieldle.com
+- Nav updated with Analytics and Subscription links
 
 ### Phase 10 -- Retirement Home Portal (Next.js 14) [Complete]
 Goal: Multi-tenant B2B dashboard for senior living facilities.
@@ -406,9 +408,9 @@ Goal: Public marketing and acquisition site.
 | Feature | Priority | Notes |
 |---------|----------|-------|
 | WatchOS companion app | High | Show live resident risk level on caregiver wrist |
-| Android package cleanup | Medium | Resolve notification/ vs notifications/ duplicate packages |
+| Android package cleanup | Medium | FamilyNotificationManager merged into notification/ package; notifications/ stubs remain — delete via git rm after clone |
 | iOS on-device ML audio | Medium | Replace inert ClaudeAPIService with Core ML model for live audio |
-| Family dashboard expansion | Medium | Analytics, subscription management, notification prefs |
+| Family dashboard notification prefs | Low | Notification preference page (analytics + subscription now complete) |
 | Retirement portal Firestore | High | Replace mock data with real Firestore queries |
 | Multi-language LE Portal | Low | Spanish, French translations |
 | Enterprise SSO | Low | SAML/OIDC for large facility operators |
